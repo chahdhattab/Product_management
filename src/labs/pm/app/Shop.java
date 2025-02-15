@@ -1,15 +1,17 @@
 package labs.pm.app;
+import labs.pm.data.Product;
+
+import java.math.BigDecimal;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Shop {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.println("Hello and welcome!");
+        Product p1 = new Product();
+        p1.setId(101);
+        p1.setName("Tea");
+        p1.setPrice(BigDecimal.valueOf(1.99));
+        System.out.println(p1.getId()+" "+p1.getName()+" "+p1.getPrice()+" "+p1.getDiscount());
 
-        for (int i = 1; i <= 5; i++) {
-            System.out.println("i = " + i);
-        }
     }
 }
