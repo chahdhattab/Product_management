@@ -24,8 +24,31 @@ public class Product {
     private int id;
     private String name;
     private BigDecimal price;
+    private final Rating rating;
+
+    public Product(){
+        this.id = 0;
+        this.name = "no name";
+        this.price = BigDecimal.valueOf(0);
+        this.rating = Rating.NOT_RATED;
+    }
+
+    public Product(int id, String name, BigDecimal price, Rating rating) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.rating = rating;
+    }
+
+    public Product(int id, String name, BigDecimal price){
+        this(id, name, price, Rating.NOT_RATED);
+    }
 
     public static final BigDecimal DISCOUNT_RATE=BigDecimal.valueOf (0.1);
+
+    public Rating getRating() {
+        return rating;
+    }
 
     public int getId() {
         return id;
