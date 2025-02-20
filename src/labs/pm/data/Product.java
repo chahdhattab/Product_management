@@ -21,9 +21,9 @@ import static java.math.RoundingMode.HALF_UP;
 
 
 public class Product {
-    private int id;
-    private String name;
-    private BigDecimal price;
+    private final int id;
+    private final String name;
+    private final BigDecimal price;
     private final Rating rating;
 
     public Product(){
@@ -44,6 +44,11 @@ public class Product {
         this(id, name, price, Rating.NOT_RATED);
     }
 
+    public Product applyRating(Rating new_rating){
+        return new Product (this.id, this.name, this.price, new_rating);
+
+    }
+
     public static final BigDecimal DISCOUNT_RATE=BigDecimal.valueOf (0.1);
 
     public Rating getRating() {
@@ -54,25 +59,16 @@ public class Product {
         return id;
     }
 
-    public void setId(final int id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice( final BigDecimal price) {
-        this.price = price;
-    }
 
     public BigDecimal getDiscount(){
         return price.multiply(DISCOUNT_RATE).setScale(2, RoundingMode.HALF_UP);
