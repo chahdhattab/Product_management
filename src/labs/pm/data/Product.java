@@ -13,6 +13,9 @@
 package labs.pm.data;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.Objects;
+
 import static java.math.RoundingMode.HALF_UP;
 
 /**
@@ -20,11 +23,31 @@ import static java.math.RoundingMode.HALF_UP;
  **/
 
 
-public class Product {
+public abstract class Product {
     private final int id;
     private final String name;
     private final BigDecimal price;
     private final Rating rating;
+
+    @Override
+    public String toString() {
+        return id+", "+name+", "+price+", "+getDiscount () +", "+rating.getStars()+", "+getBestBefore ();
+    }
+
+
+    @Override
+    public boolean equals (Object o) {
+        if (this == o) return true;
+        if (o instanceof Product product) {
+            return id == product.id && Objects.equals(name, product.name);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 
     public Product(){
         this.id = 0;
@@ -44,9 +67,10 @@ public class Product {
         this(id, name, price, Rating.NOT_RATED);
     }
 
-    public Product applyRating(Rating new_rating){
-        return new Product (this.id, this.name, this.price, new_rating);
+    public abstract Product applyRating(Rating new_rating);
 
+    public LocalDate getBestBefore() {
+        return LocalDate.now();
     }
 
     public static final BigDecimal DISCOUNT_RATE=BigDecimal.valueOf (0.1);
