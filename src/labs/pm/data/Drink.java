@@ -18,7 +18,7 @@ import java.time.LocalTime;
 /**
  * @author macbook
  **/
-public class Drink extends Product{
+public final class Drink extends Product{
 
 
 

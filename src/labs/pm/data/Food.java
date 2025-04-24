@@ -18,7 +18,7 @@ import java.time.LocalDate;
  * @author macbook
  **/
 
-public class Food extends Product{
+public final class Food extends Product{
 
     private LocalDate bestBefore;
 
