@@ -18,9 +18,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * @author macbook
@@ -30,8 +28,7 @@ public class ProductManager {
     private ResourceBundle resources;
     private DateTimeFormatter dateFormat;
     private NumberFormat moneyFormat;
-    private Product product;
-    private Review[] reviews = new Review[5];
+    private Map<Product , List<Review>> products = new HashMap<>();
 
     public ProductManager(Locale locale) {
         this.locale = locale;
@@ -41,35 +38,33 @@ public class ProductManager {
     }
 
     public Product createProduct (int id, String name, BigDecimal price, Rating rating, LocalDate bestBefore) {
-        product = new Food(id, name, price, rating, bestBefore);
+        Product product = new Food(id, name, price, rating, bestBefore);
+        products.putIfAbsent(product, new ArrayList<>());
         return product;
     }
 
     public Product createProduct (int id, String name, BigDecimal price, Rating rating){
-        product = new Drink(id, name, price, rating);
+        Product product = new Drink(id, name, price, rating);
+        products.putIfAbsent(product, new ArrayList<>());
         return product;
     }
 
     public Product reviewProduct (Product product, Rating rating, String comments) {
-        if (reviews [reviews.length-1] != null) { //First, it checks if the last element of the reviews array is not null
-            reviews = Arrays.copyOf (reviews, reviews.length+5); //If the array is full, it expands the array by 5 more slots using Arrays.copyOf()
+        List <Review> reviews = products.get(product);
+        products.remove (product, reviews);
+        reviews.add (new Review(rating, comments));
+        int sum = 0;
+        for (Review review: reviews) {
+            sum += review.rating().ordinal();
         }
-        int sum = 0,i = 0;
-        boolean reviewed = false;
-        while (i < reviews.length && !reviewed){ //When it finds an empty slot, it stores the new review there (with the given rating and comments)
-            if (reviews[i] == null){
-                reviews [i] = new Review (rating, comments);
-                reviewed = true;
-            }
-            sum += reviews[i].rating().ordinal(); //Ratings are assumed to be enums (like ★, ★★, ★★★), so .ordinal() converts them to numbers (e.g., ★ = 1, ★★ = 2, etc.)
-            i++;
-        }
-
-        this.product = product.applyRating(Rateable.convert(Math.round ((float) sum/i))); // The average rating is rounded to the nearest whole number.  The product’s rating is updated using product.applyRating().
-        return this.product;
+        product = product.applyRating(Rateable.convert(
+                Math.round ( (float)sum/reviews.size () )));
+        products.put(product, reviews);
+        return product;
     }
 
-    public void printProductReport (){
+    public void printProductReport (Product product){
+        List <Review> reviews = products.get(product);
         StringBuilder txt = new StringBuilder ();
         String type = (product instanceof Food) ? resources. getString ("food") : resources. getString ("drink");
         txt.append (MessageFormat.format (resources.getString ("product"),
@@ -83,7 +78,7 @@ public class ProductManager {
                     review.rating ().getStars (), review.comments())) ;
             txt.append ('\n');
         }
-        if(reviews [0] == null){
+        if (reviews.isEmpty ()) {
             txt.append (resources.getString ("no.reviews"));
             txt.append ('\n');
         }
