@@ -38,8 +38,8 @@ public sealed abstract class Product implements Rateable<Product> permits Food, 
     @Override
     public boolean equals (Object o) {
         if (this == o) return true;
-        if (o instanceof Product product) {
-            return id == product.id && Objects.equals(name, product.name);
+        if (o instanceof Product product){
+            return id == product.id;
         }
         return false;
     }
